@@ -16,18 +16,18 @@ int main()
 	// Open Algorithm Provider - RNG
 	status = BCryptOpenAlgorithmProvider(
 			 &algHandle,				// Address of Algorithm Handle
-			 BCRYPT_RNG_ALGORITHM,		// Cryptographic Algorithm Name 
-			 NULL,						// Not use
-			 0);						// Flags 
-	if (!NT_SUCCESS(status)) return;	// Print Error Code
+			 BCRYPT_RNG_ALGORITHM,			// Cryptographic Algorithm Name 
+			 NULL,					// Not use
+			 0);					// Flags 
+	if (!NT_SUCCESS(status)) return;			// Print Error Code
 
 	// Performing Cryptographic Operations 
 	BYTE random[16] = { 0, };
 	status = BCryptGenRandom(
-			 algHandle,							// Algorithm Handle 
-			 random,							// Address of a buffer that receives the random number
-			 16,								// The size of the random
-			 BCRYPT_RNG_USE_ENTROPY_IN_BUFFER); // Flags
+			 algHandle,				// Algorithm Handle 
+			 random,				// Address of a buffer that receives the random number
+			 16,					// The size of the random
+			 BCRYPT_RNG_USE_ENTROPY_IN_BUFFER); 	// Flags
 	if (!NT_SUCCESS(status)) return;			// Print Error Code
 
 	// Close Algorithm Provider
