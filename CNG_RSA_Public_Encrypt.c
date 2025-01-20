@@ -66,92 +66,92 @@ void Encrypt()
 	NTSTATUS status = 0;
 
 	BYTE Plain[] = { 'F', 'a', 'S', ' ', '2', '0', '2', '5', ' ',
-					 'F', 'a', 'S', ' ', '2', '0', '2', '5', ' ',
-					 'F', 'a', 'S', ' ', '2', '0', '2', '5', '\0' };
+			 'F', 'a', 'S', ' ', '2', '0', '2', '5', ' ',
+			 'F', 'a', 'S', ' ', '2', '0', '2', '5', '\0' };
 
 	BYTE*   Cipher = NULL;
-    DWORD	CipherLength = 0;
-    DWORD	bufferSize = 0;
+    	DWORD	CipherLength = 0;
+    	DWORD	bufferSize = 0;
 	//--------------------------------------------------------------------------------------------------
 	// CNG Variables  
 	BCRYPT_ALG_HANDLE algHandle = BCRYPT_RSA_ALG_HANDLE;
-    BCRYPT_KEY_HANDLE PublicKey_Handle = NULL; 
+    	BCRYPT_KEY_HANDLE PublicKey_Handle = NULL; 
 	//--------------------------------------------------------------------------------------------------
 	// 1. Setting Public Key BLOB 
-    RSA_PublicKey_BLOB* PublicKey = NULL; 
-    PublicKey = (RSA_PublicKey_BLOB*)(calloc)(1, sizeof(RSA_PublicKey_BLOB));
-    if (PublicKey == NULL) { printf("Memory Alloc Fail\n");  return; } 
-
-    PublicKey->Magic = BCRYPT_RSAPUBLIC_MAGIC;
-    PublicKey->BitLength = 4096;
-    PublicKey->cbPublicExp = 3;
-    PublicKey->cbModulus = 512;
-    PublicKey->cbPrime1 = 0;
-    PublicKey->cbPrime2 = 0;
-    memcpy(PublicKey->PublicExponent, e, 3);
-    memcpy(PublicKey->Modulus, n, 512);
+	RSA_PublicKey_BLOB* PublicKey = NULL; 
+    	PublicKey = (RSA_PublicKey_BLOB*)(calloc)(1, sizeof(RSA_PublicKey_BLOB));
+	if (PublicKey == NULL) { printf("Memory Alloc Fail\n");  return; } 
+	
+	PublicKey->Magic = BCRYPT_RSAPUBLIC_MAGIC;
+	PublicKey->BitLength = 4096;
+	PublicKey->cbPublicExp = 3;
+	PublicKey->cbModulus = 512;
+	PublicKey->cbPrime1 = 0;
+	PublicKey->cbPrime2 = 0;
+	memcpy(PublicKey->PublicExponent, e, 3);
+	memcpy(PublicKey->Modulus, n, 512);
 	//--------------------------------------------------------------------------------------------------
 	// 2. Import Key Pair 
 	status = BCryptImportKeyPair(
-             algHandle,                     // CNG Algorithm Handle 
-             NULL,                          // Not use 
-             BCRYPT_RSAPUBLIC_BLOB,         // Type of blob
-             &PublicKey_Handle,             // A pointer to Key Handle
-             (PBYTE)PublicKey,              // Address of a buffer that contains the key blob
-             RSA_PublicKey_BLOB_Size,       // Size of the buffer that contains the key blob 
-             BCRYPT_NO_KEY_VALIDATION);     // Flags    
+             	 algHandle,                     // CNG Algorithm Handle 
+             	 NULL,                          // Not use 
+             	 BCRYPT_RSAPUBLIC_BLOB,         // Type of blob
+             	 &PublicKey_Handle,             // A pointer to Key Handle
+             	 (PBYTE)PublicKey,              // Address of a buffer that contains the key blob
+             	 RSA_PublicKey_BLOB_Size,       // Size of the buffer that contains the key blob 
+             	 BCRYPT_NO_KEY_VALIDATION);     // Flags    
 	
-    if (!NT_SUCCESS(status)) { printf("2\n"); return; }
+    	if (!NT_SUCCESS(status)) { printf("2\n"); return; }
 	//--------------------------------------------------------------------------------------------------
 	// 3. Operate RSA-4096 - Calculate Ciphertext Length 
 	status = BCryptEncrypt(           // Calculate ciphertext length
-             PublicKey_Handle,        // KEY HANDLE
-             Plain,                   // Address of the buffer that contains the plaintext 
-             sizeof(Plain),           // Size of the buffer that contains the plaintext 
-             NULL,                    // A pointer to padding info used with asymetric; OAEP
-             NULL,                    // Address of the buffer that contains the Initial Vector 
-             0,                       // Size of the buffer that contains the Initial Vector
-             NULL,                    // Address of the buffer that receives the ciphertext. 
-             0,                       // Size of the buffer that receives the ciphertext
-             &CipherLength,           // Variable that receives number of bytes copied to ciphertext buffer
-             BCRYPT_PAD_PKCS1);       // Flags : Padding 
+                 PublicKey_Handle,        // KEY HANDLE
+                 Plain,                   // Address of the buffer that contains the plaintext 
+                 sizeof(Plain),           // Size of the buffer that contains the plaintext 
+                 NULL,                    // A pointer to padding info used with asymetric; OAEP
+                 NULL,                    // Address of the buffer that contains the Initial Vector 
+                 0,                       // Size of the buffer that contains the Initial Vector
+                 NULL,                    // Address of the buffer that receives the ciphertext. 
+                 0,                       // Size of the buffer that receives the ciphertext
+                 &CipherLength,           // Variable that receives number of bytes copied to ciphertext buffer
+                 BCRYPT_PAD_PKCS1);       // Flags : Padding 
 
 	if (!NT_SUCCESS(status)) { printf("3\n"); return; }
 	// --------------------------------------------------------------------------------------------------
 	// 4. Operate RSA-4096 - Encrypt Plaintext
-    Cipher = (PBYTE)calloc(CipherLength, sizeof(BYTE));
-    if (Cipher == NULL) return;
-    status = BCryptEncrypt(           // Encrypt data
-             PublicKey_Handle,        // KEY HANDLE
-             Plain,                   // Address of the buffer that contains the plaintext 
-             sizeof(Plain),           // Size of the buffer that contains the plaintext 
-             NULL,                    // A pointer to padding info used with asymetric; OAEP
-             NULL,                    // Address of the buffer that contains the Initial Vector 
-             0,                       // Size of the buffer that contains the Initial Vector
-             Cipher,                  // Address of the buffer that receives the ciphertext. 
-             CipherLength,            // Size of the buffer that receives the ciphertext
-             &bufferSize,             // Variable that receives number of bytes copied to ciphertext buffer
-             BCRYPT_PAD_PKCS1);       // Flags : Padding 
+	Cipher = (PBYTE)calloc(CipherLength, sizeof(BYTE));
+	if (Cipher == NULL) return;
+	status = BCryptEncrypt(           // Encrypt data
+	         PublicKey_Handle,        // KEY HANDLE
+	         Plain,                   // Address of the buffer that contains the plaintext 
+	         sizeof(Plain),           // Size of the buffer that contains the plaintext 
+	         NULL,                    // A pointer to padding info used with asymetric; OAEP
+	         NULL,                    // Address of the buffer that contains the Initial Vector 
+	         0,                       // Size of the buffer that contains the Initial Vector
+	         Cipher,                  // Address of the buffer that receives the ciphertext. 
+	         CipherLength,            // Size of the buffer that receives the ciphertext
+	         &bufferSize,             // Variable that receives number of bytes copied to ciphertext buffer
+	         BCRYPT_PAD_PKCS1);       // Flags : Padding 
 	
-    if (!NT_SUCCESS(status)) { printf("4\n"); return; }
-    // --------------------------------------------------------------------------------------------------
-    // 5. Print Ciphertext
-    CipherLength = bufferSize; 
-    printf("Print Cipher(Cipher Size = %d)", CipherLength);
-    for (int i = 0; i < CipherLength; i++) {
-        if(i % 16 == 0) printf("\n");
-        if(i == CipherLength - 1) {
-            printf("0x%02X", Cipher[i]);
-            break; 
-        }
-        printf("0x%02X, ", Cipher[i]); 
-    }
-    
-    // 6. Memory Free
+	if (!NT_SUCCESS(status)) { printf("4\n"); return; }
+	// --------------------------------------------------------------------------------------------------
+	// 5. Print Ciphertext
+	CipherLength = bufferSize; 
+	printf("Print Cipher(Cipher Size = %d)", CipherLength);
+	for (int i = 0; i < CipherLength; i++) {
+		if(i % 16 == 0) printf("\n");
+			if(i == CipherLength - 1) {
+	        		printf("0x%02X", Cipher[i]);
+	            		break; 
+	        	}
+	        printf("0x%02X, ", Cipher[i]); 
+	    }
+	    
+	// 6. Memory Free
 	BCryptDestroyKey(PublicKey_Handle);
 	BCryptCloseAlgorithmProvider(algHandle, 0);
 	free(Cipher);
-    free(PublicKey); 
+	free(PublicKey); 
 	return;
 }
 
