@@ -11,16 +11,16 @@
 #define RSA_PrivateKey_BLOB_Size 1051 
 
 typedef struct _PublicKey_BLOB {
-    ULONG Magic;                // Magic number of RSAKEY 
-    ULONG BitLength;            // The size(bit) of the modulus N  
-    ULONG cbPublicExp;          // The size(byte) of the Public exponent e
-    ULONG cbModulus;            // The size(byte) of the modulus N 
-    ULONG cbPrime1;             // The size(byte) of the p 
-    ULONG cbPrime2;             // The size(byte) of the q 
-    BYTE PublicExponent[3];     // Array of Public Exponent e; e = 65537 = 0x01, 0x00, 0x01
-    BYTE Modulus[512];          // Array of Modulus n; In RSA-4096, n = 4096-bit = 512-byte
-    BYTE p[256];                // Array of Prime p
-    BYTE q[256];                // Array of Prime q
+                ULONG Magic;                // Magic number of RSAKEY 
+                ULONG BitLength;            // The size(bit) of the modulus N  
+                ULONG cbPublicExp;          // The size(byte) of the Public exponent e
+                ULONG cbModulus;            // The size(byte) of the modulus N 
+                ULONG cbPrime1;             // The size(byte) of the p 
+                ULONG cbPrime2;             // The size(byte) of the q 
+                BYTE PublicExponent[3];     // Array of Public Exponent e; e = 65537 = 0x01, 0x00, 0x01
+                BYTE Modulus[512];          // Array of Modulus n; In RSA-4096, n = 4096-bit = 512-byte
+                BYTE p[256];                // Array of Prime p
+                BYTE q[256];                // Array of Prime q
 } RSA_PrivateKey_BLOB;
 
 //--------------------------------------------------------------------------------------------------
