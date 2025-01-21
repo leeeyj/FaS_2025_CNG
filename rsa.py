@@ -1,3 +1,6 @@
+# How to install 
+# pip install pycryptodome
+
 from Crypto.PublicKey import RSA 
 
 key = RSA.generate(4096, e=65537)
