@@ -10,7 +10,7 @@
 
 #define RSA_PrivateKey_BLOB_Size 1051 
 
-typedef struct _PublicKey_BLOB {
+typedef struct _PrivateKey_BLOB {
                 ULONG Magic;                // Magic number of RSAKEY 
                 ULONG BitLength;            // The size(bit) of the modulus N  
                 ULONG cbPublicExp;          // The size(byte) of the Public exponent e
